@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雙區戶外運動氣象預測</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333;
+            --text-sub: #666;
+            
+            /* 5 Levels Colors (Light Pastels) */
+            --level-rest: #ef9a9a;       /* 淺紅 - 休息 */
+            --level-bad: #ffcc80;        /* 淺橘 - 勉強 */
+            --level-ok: #fff59d;         /* 淺黃 - 尚可 */
+            --level-good: #81d4fa;       /* 淺藍 - 不錯 */
+            --level-excellent: #a5d6a7;  /* 淺綠 - 非常好 */
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-main);
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .build-info {
+            font-family: monospace;
+            opacity: 0.8;
+            font-size: 0.8rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .location-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            background: #eceff1;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.4rem;
+            color: #2c3e50;
+        }
+        
+        .sub-location {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-left: 10px;
+        }
+
+        .card-body { padding: 20px; }
+
+        .current-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .weather-main { flex: 1; min-width: 150px; }
+        .weather-temp { font-size: 2.5rem; font-weight: bold; }
+        .weather-desc { font-size: 1.1rem; color: var(--text-sub); }
+
+        .recommendation {
+            flex: 2;
+            min-width: 200px;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .activity-section { margin-top: 10px; }
+        .activity-title {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .traffic-lights {
+            display: flex;
+            height: 110px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .light-block {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #333;
+            border-right: 1px solid rgba(255,255,255,0.5);
+            position: relative;
+            padding: 0 5px;
+        }
+        .light-block:last-child { border-right: none; }
+
+        .time-label { 
+            font-size: 0.8rem; 
+            font-weight: bold; 
+            margin-bottom: 5px; 
+            white-space: nowrap; 
+        }
+        .status-label { font-size: 1rem; font-weight: bold; }
+        .temp-sub { font-size: 0.8rem; opacity: 0.8; margin-top: 5px; }
+
+        .details-toggle {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+            color: #007bff;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+        }
+
+        .forecast-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .forecast-table.show { display: table; }
+        .forecast-table th, .forecast-table td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        .forecast-table th { background-color: #f8f9fa; }
+
+        .loading { text-align: center; padding: 30px; font-size: 1.2rem; color: #666; }
+        .error-msg { 
+            color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; 
+            padding: 15px; border-radius: 5px; margin: 20px; white-space: pre-line;
+            text-align: left; font-family: monospace; font-size: 0.85rem;
+        }
+        .debug-data-dump {
+            background: #333; color: #0f0; padding: 15px; margin: 20px 0;
+            font-family: monospace; font-size: 0.8rem; overflow-x: auto;
+            border-radius: 5px; white-space: pre-wrap; display: none;
+        }
+
+        footer {
+            margin-top: 40px;
+            background: #fff;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="app-name">🌤️ 雙區氣象運動指引</div>
+    <div class="build-info">Build# 2025120413 (KeyMask)</div>
+</header>
+
+<div class="container">
+    <div id="mainContent">
+        <div id="loading" class="loading">
+            正在連線至氣象署取得 3 小時預報...<br>
+            <small style="font-size:0.9rem">F-D0047-061/069</small>
+        </div>
+        
+        <div id="error-display" class="error-msg" style="display:none;"></div>
+        <div id="debug-area" class="debug-data-dump"></div>
+
+        <!-- 信義區 -->
+        <div id="card-xinyi" class="location-card" style="display:none;">
+            <div class="card-header">
+                <h2>信義區 <span class="sub-location">(六張犁)</span></h2>
+                <span id="update-time-xinyi" style="font-size:0.8rem; color:#888;">--:--</span>
+            </div>
+            <div class="card-body">
+                <div class="current-summary">
+                    <div class="weather-main">
+                        <div class="weather-temp" id="curr-temp-xinyi">--°C</div>
+                        <div class="weather-desc" id="curr-desc-xinyi">--</div>
+                        <div style="font-size:0.9rem; color:#555;">降雨機率: <span id="curr-pop-xinyi">--</span>%</div>
+                    </div>
+                    <div class="recommendation">
+                        <div class="rec-item">☂️ <span id="rec-umbrella-xinyi">--</span></div>
+                        <div class="rec-item">👕 <span id="rec-cloth-xinyi">--</span></div>
+                        <div class="rec-item">🏃 <span id="rec-sport-xinyi">--</span></div>
+                    </div>
+                </div>
+
+                <div class="activity-section">
+                    <div class="activity-title">未來 12 小時運動建議 (3小時區間)</div>
+                    <div class="traffic-lights" id="lights-xinyi"></div>
+                </div>
+
+                <div class="details-toggle" onclick="toggleDetails('table-xinyi')">查看詳細預報 (未來2天 / 不重疊區間)</div>
+                <table id="table-xinyi" class="forecast-table">
+                    <thead><tr><th>時間</th><th>溫度</th><th>天氣</th><th>降雨機率</th></tr></thead>
+                    <tbody id="tbody-xinyi"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 新店區 -->
+        <div id="card-xindian" class="location-card" style="display:none;">
+            <div class="card-header">
+                <h2>新店區 <span class="sub-location">(央北/十四張)</span></h2>
+                <span id="update-time-xindian" style="font-size:0.8rem; color:#888;">--:--</span>
+            </div>
+            <div class="card-body">
+                <div class="current-summary">
+                    <div class="weather-main">
+                        <div class="weather-temp" id="curr-temp-xindian">--°C</div>
+                        <div class="weather-desc" id="curr-desc-xindian">--</div>
+                        <div style="font-size:0.9rem; color:#555;">降雨機率: <span id="curr-pop-xindian">--</span>%</div>
+                    </div>
+                    <div class="recommendation">
+                        <div class="rec-item">☂️ <span id="rec-umbrella-xindian">--</span></div>
+                        <div class="rec-item">👕 <span id="rec-cloth-xindian">--</span></div>
+                        <div class="rec-item">🏃 <span id="rec-sport-xindian">--</span></div>
+                    </div>
+                </div>
+
+                <div class="activity-section">
+                    <div class="activity-title">未來 12 小時運動建議 (3小時區間)</div>
+                    <div class="traffic-lights" id="lights-xindian"></div>
+                </div>
+
+                <div class="details-toggle" onclick="toggleDetails('table-xindian')">查看詳細預報 (未來2天 / 不重疊區間)</div>
+                <table id="table-xindian" class="forecast-table">
+                    <thead><tr><th>時間</th><th>溫度</th><th>天氣</th><th>降雨機率</th></tr></thead>
+                    <tbody id="tbody-xindian"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <div class="release-notes">
+        <h4>Release Notes (v1.0.13)</h4>
+        <ul>
+            <li><strong>UI:</strong> 維持淺色系燈號與 12 小時制不重疊區間。</li>
+        </ul>
+        <p style="margin-top:10px;">資料來源: 中央氣象署 (CWA)</p>
+    </div>
+</footer>
+
+<script>
+    const CONFIG = {
+        loc1: { dataId: "F-D0047-061", district: "信義區", uiId: "xinyi" },
+        loc2: { dataId: "F-D0047-069", district: "新店區", uiId: "xindian" }
+    };
+
+    // Obfuscated Key (Base64 Encoded)
+    // 原值: CWA-704CA24F-398C-4F3F-AD57-B69F32F96E42
+    const ENC_KEY = "Q1dBLTcwNENBMjRGLTM5OEMtNEYzRi1BRDU3LUI2OUYzMkY5NkU0Mg==";
+    
+    // Decode at runtime
+    const API_KEY = atob(ENC_KEY);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        initWeather();
+    });
+
+    async function initWeather() {
+        try {
+            document.getElementById("error-display").style.display = "none";
+            document.getElementById("debug-area").style.display = "none";
+            
+            await Promise.all([
+                fetchAndRender(CONFIG.loc1),
+                fetchAndRender(CONFIG.loc2)
+            ]);
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("card-xinyi").style.display = "block";
+            document.getElementById("card-xindian").style.display = "block";
+        } catch (error) {
+            console.error("Main Error:", error);
+            document.getElementById("loading").style.display = "none";
+            const errDiv = document.getElementById("error-display");
+            errDiv.style.display = "block";
+            errDiv.innerHTML = `<strong>系統發生錯誤：</strong><br>${error.message}`;
+        }
+    }
+
+    async function fetchAndRender(locConfig) {
+        const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/${locConfig.dataId}?Authorization=${API_KEY}&locationName=${encodeURIComponent(locConfig.district)}`;
+        
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.success === "false") {
+            throw new Error(`API 授權失敗: ${data.message.text || "未知原因"}`);
+        }
+
+        const records = data.records || data.Records;
+        const locationsWrapper = records.locations || records.Locations;
+        const locationArr = locationsWrapper[0].location || locationsWrapper[0].Location;
+
+        if (!locationArr || locationArr.length === 0) {
+            throw new Error(`找不到「${locConfig.district}」的資料。`);
+        }
+
+        const locationData = locationArr[0];
+        const weatherElements = locationData.weatherElement || locationData.WeatherElement;
+        
+        try {
+            const forecastList = processWeatherData(weatherElements, locConfig.district, locConfig.uiId);
+            renderUI(locConfig.uiId, forecastList);
+        } catch (e) {
+            const debugEl = document.getElementById("debug-area");
+            debugEl.style.display = "block";
+            debugEl.innerText += `\n--- Debug Info (${locConfig.district}) ---\nError: ${e.message}\nRaw Elements (Names): ${weatherElements.map(x=>x.elementName || x.ElementName).join(", ")}\n`;
+            throw e;
+        }
+    }
+
+    function processWeatherData(elements, districtName, uiId) {
+        const getEl = (names) => elements.find(e => names.includes(e.elementName || e.ElementName));
+        
+        const elT = getEl(["T", "溫度", "平均溫度"]);
+        if (!elT) throw new Error("找不到溫度欄位");
+        const T_list = elT.time || elT.Time;
+        
+        const elWx = getEl(["Wx", "天氣現象"]);
+        const Wx_list = elWx ? (elWx.time || elWx.Time) : [];
+        const elPoP = getEl(["PoP3h", "3小時降雨機率", "PoP12h", "12小時降雨機率", "PoP6h", "6小時降雨機率"]);
+        const PoP_list = elPoP ? (elPoP.time || elPoP.Time) : [];
+
+        let result = [];
+        
+        T_list.forEach((tItem) => {
+            const startStr = tItem.startTime || tItem.StartTime || tItem.dataTime || tItem.DataTime;
+            const endStr = tItem.endTime || tItem.EndTime;
+            
+            const startTime = new Date(startStr);
+            let endTime;
+
+            if (endStr) {
+                endTime = new Date(endStr);
+            } else {
+                endTime = new Date(startTime.getTime() + 3 * 60 * 60 * 1000);
+            }
+            
+            const tVals = tItem.elementValue || tItem.ElementValue;
+            let tempVal = tVals[0].value || tVals[0].Temperature;
+            tempVal = parseInt(tempVal);
+
+            const wxItem = Wx_list.find(w => {
+                const wStartStr = w.startTime || w.StartTime || w.dataTime || w.DataTime;
+                return new Date(wStartStr).getTime() === startTime.getTime();
+            });
+            const wxVals = wxItem ? (wxItem.elementValue || wxItem.ElementValue) : [];
+            const wxDesc = wxVals.length > 0 ? (wxVals[0].value || wxVals[0].Weather) : "-";
+            const wxCodeVal = wxVals.length > 1 ? parseInt(wxVals[1].value) : 0; 
+
+            const popItem = PoP_list.find(p => {
+                const pStartStr = p.startTime || p.StartTime || p.dataTime || p.DataTime;
+                return new Date(pStartStr).getTime() === startTime.getTime();
+            });
+            
+            let popVal = "0";
+            if (popItem) {
+                const pVals = popItem.elementValue || popItem.ElementValue;
+                popVal = pVals[0].value || pVals[0].ProbabilityOfPrecipitation;
+            } else {
+                const popOverlap = PoP_list.find(p => {
+                    const pS = new Date(p.startTime || p.StartTime);
+                    const pE = new Date(p.endTime || p.EndTime);
+                    return (startTime < pE && endTime > pS);
+                });
+                if (popOverlap) {
+                    const pVals = popOverlap.elementValue || popOverlap.ElementValue;
+                    popVal = pVals[0].value || pVals[0].ProbabilityOfPrecipitation;
+                }
+            }
+
+            if (!popVal || popVal === " " || popVal === "null") popVal = "0";
+
+            result.push({
+                startTime: startTime,
+                endTime: endTime,
+                temp: tempVal,
+                wx: wxDesc,
+                wxCode: wxCodeVal,
+                pop: popVal
+            });
+        });
+
+        result.sort((a, b) => a.startTime - b.startTime);
+        return result;
+    }
+
+    function renderUI(uiId, data) {
+        const now = new Date();
+        let futureData = data.filter(d => d.endTime > now);
+        
+        if (futureData.length === 0 && data.length > 0) {
+            console.warn(`${uiId}: No future data. Showing recent.`);
+            futureData = data.slice(-3); 
+            const errDiv = document.getElementById("error-display");
+            errDiv.style.display = "block";
+            errDiv.innerHTML += `${uiId}: 暫無最新未來預報，顯示最近資料。<br>`;
+        }
+
+        if (futureData.length === 0) return;
+
+        const current = futureData[0];
+
+        // 摘要
+        document.getElementById(`curr-temp-${uiId}`).innerText = `${current.temp}°C`;
+        document.getElementById(`curr-desc-${uiId}`).innerText = current.wx;
+        document.getElementById(`curr-pop-${uiId}`).innerText = current.pop;
+        
+        const updateT = new Date();
+        document.getElementById(`update-time-${uiId}`).innerText = 
+            `更新: ${updateT.getHours().toString().padStart(2,'0')}:${updateT.getMinutes().toString().padStart(2,'0')}`;
+
+        const recs = getRecommendations(current.temp, parseInt(current.pop), current.wx);
+        document.getElementById(`rec-umbrella-${uiId}`).innerText = recs.umbrella;
+        document.getElementById(`rec-cloth-${uiId}`).innerText = recs.cloth;
+        document.getElementById(`rec-sport-${uiId}`).innerText = recs.sport;
+
+        // --- 建立不重疊清單 (Distinct List) ---
+        let distinctList = [];
+        let cursorTime = null;
+
+        for (let i = 0; i < futureData.length; i++) {
+            const item = futureData[i];
+            
+            if (distinctList.length === 0) {
+                distinctList.push(item);
+                cursorTime = item.endTime;
+            } else {
+                // 確保下一筆的開始時間 >= 上一筆的結束時間
+                if (item.startTime.getTime() >= cursorTime.getTime()) {
+                    distinctList.push(item);
+                    cursorTime = item.endTime;
+                }
+            }
+        }
+
+        // 1. 燈號 (取前 4 筆)
+        const lightsContainer = document.getElementById(`lights-${uiId}`);
+        lightsContainer.innerHTML = "";
+        
+        distinctList.slice(0, 4).forEach(slot => {
+            const score = calculateActivityScore(slot);
+            const colorInfo = getScoreColor(score);
+            
+            const div = document.createElement("div");
+            div.className = "light-block"; 
+            div.style.backgroundColor = colorInfo.color;
+            
+            const startH = slot.startTime.getHours();
+            const endH = slot.endTime.getHours();
+            
+            div.innerHTML = `
+                <div class="time-label">${formatHour12(startH)}-${formatHour12(endH)}</div>
+                <div class="status-label">${colorInfo.text}</div>
+                <div class="temp-sub">${slot.temp}°C / ${slot.pop}%</div>
+            `;
+            lightsContainer.appendChild(div);
+        });
+
+        // 2. 表格 (顯示更多不重疊的區間，例如前 16 筆 = 48小時)
+        const tbody = document.getElementById(`tbody-${uiId}`);
+        tbody.innerHTML = "";
+        distinctList.slice(0, 16).forEach(d => {
+            const row = `<tr>
+                <td>${formatDate(d.startTime)} <br> ${formatHour12(d.startTime.getHours())}~${formatHour12(d.endTime.getHours())}</td>
+                <td>${d.temp}°C</td>
+                <td>${d.wx}</td>
+                <td>${d.pop}%</td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function calculateActivityScore(data) {
+        let score = 4;
+        const temp = data.temp;
+        const pop = parseInt(data.pop);
+        const code = data.wxCode;
+        
+        // 1. Rain
+        if (pop >= 60) return 1; 
+        if (pop >= 30) score = 2; 
+        else if (pop >= 20) score = Math.min(score, 3);
+
+        // 2. Wx Code (Heavy Rain/Thunder)
+        if (code >= 15 && code <= 22) return 1;
+
+        // 3. Temp
+        if (temp > 35 || temp < 10) score = Math.min(score, 2);
+        else if (temp > 31 || temp < 14) score = Math.min(score, 3);
+        else if (temp >= 19 && temp <= 27 && pop < 15) score = 5;
+
+        return Math.max(1, score);
+    }
+
+    function getScoreColor(score) {
+        switch (score) {
+            case 1: return { color: "var(--level-rest)", text: "休息" };
+            case 2: return { color: "var(--level-bad)", text: "勉強" };
+            case 3: return { color: "var(--level-ok)", text: "尚可" };
+            case 4: return { color: "var(--level-good)", text: "不錯" };
+            case 5: return { color: "var(--level-excellent)", text: "非常好" };
+            default: return { color: "#ccc", text: "?" };
+        }
+    }
+
+    function getRecommendations(temp, pop, wx) {
+        let u = "不用帶傘";
+        let c = "舒適穿著";
+        let s = "適合戶外運動";
+
+        if (pop >= 50 || (wx && wx.includes("雨"))) u = "務必帶傘/雨衣";
+        else if (pop >= 20) u = "建議攜帶折傘";
+
+        if (temp < 15) c = "洋蔥式/保暖";
+        else if (temp < 20) c = "長袖/薄外套";
+        else if (temp > 28) c = "短袖/透氣";
+        else if (temp > 32) c = "注意防曬";
+
+        if (pop > 60) s = "建議室內活動";
+        else if (temp > 33) s = "注意中暑";
+        else if (temp < 12) s = "注意暖身";
+
+        return { umbrella: u, cloth: c, sport: s };
+    }
+
+    function formatHour(h) { return h.toString().padStart(2, '0'); }
+    
+    function formatHour12(h) {
+        const suffix = h >= 12 ? 'pm' : 'am';
+        let h12 = h % 12;
+        if (h12 === 0) h12 = 12; 
+        return h12.toString().padStart(2, '0') + suffix;
+    }
+
+    function formatDate(date) { return `${date.getMonth()+1}/${date.getDate()}`; }
+    function toggleDetails(id) { document.getElementById(id).classList.toggle("show"); }
+</script>
+
+</body>
+</html>
