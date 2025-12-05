@@ -12,15 +12,15 @@
             --text-sub: #666;
             
             /* 5 Levels Colors (Light Pastels) */
-            --level-rest: #ef9a9a;       /* 淺紅 - 休息 */
-            --level-bad: #ffcc80;        /* 淺橘 - 勉強 */
-            --level-ok: #fff59d;         /* 淺黃 - 尚可 */
-            --level-good: #81d4fa;       /* 淺藍 - 不錯 */
-            --level-excellent: #a5d6a7;  /* 淺綠 - 非常好 */
+            --level-rest: #ef9a9a;       /* 淺紅 - Sleep */
+            --level-bad: #ffcc80;        /* 淺橘 - Light Rain */
+            --level-ok: #fff59d;         /* 淺黃 - Nice */
+            --level-good: #81d4fa;       /* 淺藍 - Comfy */
+            --level-excellent: #a5d6a7;  /* 淺綠 - Great */
         }
 
         body {
-            font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
+            font-family: "Microsoft JhengHei", "PingFang TC", "Segoe UI Emoji", sans-serif;
             background-color: var(--bg-color);
             margin: 0;
             padding: 0;
@@ -107,18 +107,32 @@
             font-size: 1rem;
             font-weight: bold;
             margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+        .scroll-hint { font-size: 0.8rem; color: #888; font-weight: normal; }
 
         .traffic-lights {
             display: flex;
-            height: 110px;
+            height: 125px; 
             border-radius: 10px;
-            overflow: hidden;
+            overflow-x: auto; 
+            overflow-y: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: #fff;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
         }
 
+        .traffic-lights::-webkit-scrollbar { height: 4px; }
+        .traffic-lights::-webkit-scrollbar-track { background: #f1f1f1; }
+        .traffic-lights::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
         .light-block {
-            flex: 1;
+            flex: 0 0 20%; 
+            min-width: 80px; 
+            
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -127,18 +141,39 @@
             color: #333;
             border-right: 1px solid rgba(255,255,255,0.5);
             position: relative;
-            padding: 0 5px;
+            padding: 5px 2px;
+            scroll-snap-align: start;
         }
+        
+        @media (min-width: 600px) {
+            .light-block { flex: 0 0 15%; }
+        }
+
         .light-block:last-child { border-right: none; }
 
         .time-label { 
             font-size: 0.8rem; 
             font-weight: bold; 
-            margin-bottom: 5px; 
+            margin-bottom: 4px; 
             white-space: nowrap; 
         }
-        .status-label { font-size: 1rem; font-weight: bold; }
-        .temp-sub { font-size: 0.8rem; opacity: 0.8; margin-top: 5px; }
+        .status-label { 
+            font-size: 0.95rem; 
+            font-weight: bold; 
+            margin-bottom: 4px; 
+            line-height: 1.2;
+        }
+        
+        .temp-sub { 
+            font-size: 0.85rem; 
+            opacity: 0.9; 
+            line-height: 1.3;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .rain-row { font-size: 0.8rem; opacity: 0.8; }
+        .rain-mm { font-size: 0.75rem; opacity: 0.7; color: #444; }
 
         .details-toggle {
             display: block;
@@ -163,7 +198,7 @@
             text-align: center;
             border-bottom: 1px solid #eee;
         }
-        .forecast-table th { background-color: #f8f9fa; }
+        .forecast-table th { background-color: #f8f9fa; white-space: nowrap; }
 
         .loading { text-align: center; padding: 30px; font-size: 1.2rem; color: #666; }
         .error-msg { 
@@ -191,7 +226,7 @@
 
 <header>
     <div class="app-name">🌤️ 雙區氣象運動指引</div>
-    <div class="build-info">Build# 2025120413 (KeyMask)</div>
+    <div class="build-info">Build# 2025120505 (NiceFix)</div>
 </header>
 
 <div class="container">
@@ -225,13 +260,16 @@
                 </div>
 
                 <div class="activity-section">
-                    <div class="activity-title">未來 12 小時運動建議 (3小時區間)</div>
+                    <div class="activity-title">
+                        未來 24 小時運動建議
+                        <span class="scroll-hint">← 左右滑動 →</span>
+                    </div>
                     <div class="traffic-lights" id="lights-xinyi"></div>
                 </div>
 
-                <div class="details-toggle" onclick="toggleDetails('table-xinyi')">查看詳細預報 (未來2天 / 不重疊區間)</div>
+                <div class="details-toggle" onclick="toggleDetails('table-xinyi')">查看詳細預報 (未來48小時)</div>
                 <table id="table-xinyi" class="forecast-table">
-                    <thead><tr><th>時間</th><th>溫度</th><th>天氣</th><th>降雨機率</th></tr></thead>
+                    <thead><tr><th>時間</th><th>溫度</th><th>天氣</th><th>降雨</th></tr></thead>
                     <tbody id="tbody-xinyi"></tbody>
                 </table>
             </div>
@@ -258,13 +296,16 @@
                 </div>
 
                 <div class="activity-section">
-                    <div class="activity-title">未來 12 小時運動建議 (3小時區間)</div>
+                    <div class="activity-title">
+                        未來 24 小時運動建議
+                        <span class="scroll-hint">← 左右滑動 →</span>
+                    </div>
                     <div class="traffic-lights" id="lights-xindian"></div>
                 </div>
 
-                <div class="details-toggle" onclick="toggleDetails('table-xindian')">查看詳細預報 (未來2天 / 不重疊區間)</div>
+                <div class="details-toggle" onclick="toggleDetails('table-xindian')">查看詳細預報 (未來48小時)</div>
                 <table id="table-xindian" class="forecast-table">
-                    <thead><tr><th>時間</th><th>溫度</th><th>天氣</th><th>降雨機率</th></tr></thead>
+                    <thead><tr><th>時間</th><th>溫度</th><th>天氣</th><th>降雨</th></tr></thead>
                     <tbody id="tbody-xindian"></tbody>
                 </table>
             </div>
@@ -274,9 +315,10 @@
 
 <footer>
     <div class="release-notes">
-        <h4>Release Notes (v1.0.13)</h4>
+        <h4>Release Notes (v1.0.20)</h4>
         <ul>
-            <li><strong>UI:</strong> 維持淺色系燈號與 12 小時制不重疊區間。</li>
+            <li><strong>UI:</strong> 修正 Level 3 狀態為 "😊 Nice"。</li>
+            <li><strong>Status:</strong> Sleep / Light Rain / Nice / Comfy / Great!</li>
         </ul>
         <p style="margin-top:10px;">資料來源: 中央氣象署 (CWA)</p>
     </div>
@@ -288,11 +330,8 @@
         loc2: { dataId: "F-D0047-069", district: "新店區", uiId: "xindian" }
     };
 
-    // Obfuscated Key (Base64 Encoded)
-    // 原值: CWA-704CA24F-398C-4F3F-AD57-B69F32F96E42
+    // Obfuscated Key
     const ENC_KEY = "Q1dBLTcwNENBMjRGLTM5OEMtNEYzRi1BRDU3LUI2OUYzMkY5NkU0Mg==";
-    
-    // Decode at runtime
     const API_KEY = atob(ENC_KEY);
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -364,6 +403,10 @@
         const elPoP = getEl(["PoP3h", "3小時降雨機率", "PoP12h", "12小時降雨機率", "PoP6h", "6小時降雨機率"]);
         const PoP_list = elPoP ? (elPoP.time || elPoP.Time) : [];
 
+        // 嘗試尋找是否有具體雨量欄位
+        const elRain = getEl(["Rain", "Rainfall", "雨量"]); 
+        const Rain_list = elRain ? (elRain.time || elRain.Time) : [];
+
         let result = [];
         
         T_list.forEach((tItem) => {
@@ -412,6 +455,19 @@
                 }
             }
 
+            // 雨量 (mm)
+            let rainVal = null;
+            if (Rain_list.length > 0) {
+                const rItem = Rain_list.find(r => {
+                    const rStart = new Date(r.startTime || r.StartTime);
+                    return rStart.getTime() === startTime.getTime();
+                });
+                if (rItem) {
+                    const rVals = rItem.elementValue || rItem.ElementValue;
+                    rainVal = rVals[0].value;
+                }
+            }
+
             if (!popVal || popVal === " " || popVal === "null") popVal = "0";
 
             result.push({
@@ -420,7 +476,8 @@
                 temp: tempVal,
                 wx: wxDesc,
                 wxCode: wxCodeVal,
-                pop: popVal
+                pop: popVal,
+                rainMM: rainVal
             });
         });
 
@@ -458,7 +515,7 @@
         document.getElementById(`rec-cloth-${uiId}`).innerText = recs.cloth;
         document.getElementById(`rec-sport-${uiId}`).innerText = recs.sport;
 
-        // --- 建立不重疊清單 (Distinct List) ---
+        // --- 建立不重疊清單 ---
         let distinctList = [];
         let cursorTime = null;
 
@@ -469,7 +526,6 @@
                 distinctList.push(item);
                 cursorTime = item.endTime;
             } else {
-                // 確保下一筆的開始時間 >= 上一筆的結束時間
                 if (item.startTime.getTime() >= cursorTime.getTime()) {
                     distinctList.push(item);
                     cursorTime = item.endTime;
@@ -477,11 +533,11 @@
             }
         }
 
-        // 1. 燈號 (取前 4 筆)
+        // 1. 燈號 (擴充至 8 個 = 24hr)
         const lightsContainer = document.getElementById(`lights-${uiId}`);
         lightsContainer.innerHTML = "";
         
-        distinctList.slice(0, 4).forEach(slot => {
+        distinctList.slice(0, 8).forEach(slot => {
             const score = calculateActivityScore(slot);
             const colorInfo = getScoreColor(score);
             
@@ -492,20 +548,29 @@
             const startH = slot.startTime.getHours();
             const endH = slot.endTime.getHours();
             
-            div.innerHTML = `
-                <div class="time-label">${formatHour12(startH)}-${formatHour12(endH)}</div>
+            let html = `
+                <div class="time-label">${formatHour24(startH)}~${formatHour24(endH)}</div>
                 <div class="status-label">${colorInfo.text}</div>
-                <div class="temp-sub">${slot.temp}°C / ${slot.pop}%</div>
+                <div class="temp-sub">
+                    <span style="font-weight:bold; font-size:1.1rem;">${slot.temp}°C</span>
+                    <span class="rain-row">雨 ${slot.pop}%</span>
             `;
+            
+            if (slot.rainMM && slot.rainMM !== "0" && slot.rainMM !== "0.0") {
+                html += `<span class="rain-mm">量 ${slot.rainMM}mm</span>`;
+            }
+            
+            html += `</div>`;
+            div.innerHTML = html;
             lightsContainer.appendChild(div);
         });
 
-        // 2. 表格 (顯示更多不重疊的區間，例如前 16 筆 = 48小時)
+        // 2. 表格
         const tbody = document.getElementById(`tbody-${uiId}`);
         tbody.innerHTML = "";
         distinctList.slice(0, 16).forEach(d => {
             const row = `<tr>
-                <td>${formatDate(d.startTime)} <br> ${formatHour12(d.startTime.getHours())}~${formatHour12(d.endTime.getHours())}</td>
+                <td>${formatDate(d.startTime)} <br> ${formatHour24(d.startTime.getHours())}~${formatHour24(d.endTime.getHours())}</td>
                 <td>${d.temp}°C</td>
                 <td>${d.wx}</td>
                 <td>${d.pop}%</td>
@@ -520,15 +585,12 @@
         const pop = parseInt(data.pop);
         const code = data.wxCode;
         
-        // 1. Rain
         if (pop >= 60) return 1; 
         if (pop >= 30) score = 2; 
         else if (pop >= 20) score = Math.min(score, 3);
 
-        // 2. Wx Code (Heavy Rain/Thunder)
         if (code >= 15 && code <= 22) return 1;
 
-        // 3. Temp
         if (temp > 35 || temp < 10) score = Math.min(score, 2);
         else if (temp > 31 || temp < 14) score = Math.min(score, 3);
         else if (temp >= 19 && temp <= 27 && pop < 15) score = 5;
@@ -538,11 +600,11 @@
 
     function getScoreColor(score) {
         switch (score) {
-            case 1: return { color: "var(--level-rest)", text: "休息" };
-            case 2: return { color: "var(--level-bad)", text: "勉強" };
-            case 3: return { color: "var(--level-ok)", text: "尚可" };
-            case 4: return { color: "var(--level-good)", text: "不錯" };
-            case 5: return { color: "var(--level-excellent)", text: "非常好" };
+            case 1: return { color: "var(--level-rest)", text: "😴 Sleep" };
+            case 2: return { color: "var(--level-bad)", text: "🌧️ Light Rain" };
+            case 3: return { color: "var(--level-ok)", text: "😊 Nice" };
+            case 4: return { color: "var(--level-good)", text: "🤩 Comfy" };
+            case 5: return { color: "var(--level-excellent)", text: "🎉 Great!" };
             default: return { color: "#ccc", text: "?" };
         }
     }
@@ -567,13 +629,8 @@
         return { umbrella: u, cloth: c, sport: s };
     }
 
-    function formatHour(h) { return h.toString().padStart(2, '0'); }
-    
-    function formatHour12(h) {
-        const suffix = h >= 12 ? 'pm' : 'am';
-        let h12 = h % 12;
-        if (h12 === 0) h12 = 12; 
-        return h12.toString().padStart(2, '0') + suffix;
+    function formatHour24(h) { 
+        return h.toString().padStart(2, '0'); 
     }
 
     function formatDate(date) { return `${date.getMonth()+1}/${date.getDate()}`; }
