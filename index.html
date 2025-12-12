@@ -6,16 +6,23 @@
     <title>要動一動嗎?</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --text-main: #333;
-            --text-sub: #555;
+            /* Background: Deep Sporty Blue */
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
             
+            /* Card: Dark Glassmorphism */
+            --card-bg: rgba(30, 41, 59, 0.95); 
+            
+            /* Text Colors (Light Mode for Dark Background) */
+            --text-main: #ffffff;
+            --text-sub: #cbd5e1;
+            --text-muted: #94a3b8;
+
+            /* Status Colors (Keep Pastels for High Contrast against Dark) */
             --level-rest: #ef9a9a;       /* Sleep */
             --level-bad: #ffcc80;        /* Light Rain */
-            --level-ok: #fff9c4;         /* Nice */
-            --level-good: #b3e5fc;       /* Comfy */
-            --level-excellent: #c8e6c9;  /* Great */
+            --level-ok: #fff59d;         /* Nice */
+            --level-good: #81d4fa;       /* Comfy */
+            --level-excellent: #a5d6a7;  /* Great */
         }
 
         body {
@@ -27,9 +34,10 @@
             min-height: 100vh;
         }
 
+        /* --- Header --- */
         header {
-            background-color: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
             color: white;
             padding: 15px 20px;
             display: flex;
@@ -38,35 +46,51 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .app-name { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; font-style: italic; }
+        .app-name { font-size: 1.4rem; font-weight: 900; letter-spacing: 1px; font-style: italic; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         .btn-reload {
-            background: white; color: #1e3c72; border: none; padding: 8px 15px;
-            border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 0.9rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.15);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+            backdrop-filter: blur(4px);
+            transition: all 0.2s;
         }
-        .build-info { font-family: monospace; opacity: 0.7; font-size: 0.7rem; color: #eee; }
+        .btn-reload:active { background: rgba(255,255,255,0.3); transform: scale(0.95); }
+        .build-info { font-family: monospace; opacity: 0.5; font-size: 0.7rem; color: #fff; }
 
         .container {
             max-width: 900px; margin: 20px auto; padding: 0 10px;
             display: flex; flex-direction: column; gap: 15px; 
         }
 
+        /* --- Card Design (Dark Theme) --- */
         .location-row {
-            display: flex; background: var(--card-bg); border-radius: 16px;
-            overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.25); min-height: 220px;
+            display: flex; 
+            background: var(--card-bg); 
+            border-radius: 16px;
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            min-height: 220px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
 
         /* Left Header */
         .loc-header {
-            background: #2c3e50; color: white; width: 50px;
+            background: rgba(0, 0, 0, 0.4); /* Darker sidebar */
+            color: #fff; width: 50px;
             display: flex; flex-direction: column; justify-content: center;
             align-items: center; text-align: center; padding: 10px 5px; flex-shrink: 0;
+            border-right: 1px solid rgba(255,255,255,0.1);
         }
-        .loc-title { writing-mode: vertical-lr; font-size: 1.2rem; font-weight: bold; letter-spacing: 3px; text-orientation: upright; }
-        .loc-sub { writing-mode: vertical-lr; font-size: 0.8rem; opacity: 0.8; margin-top: 10px; text-orientation: upright; }
+        .loc-title { writing-mode: vertical-lr; font-size: 1.2rem; font-weight: bold; letter-spacing: 3px; text-orientation: upright; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        .loc-sub { writing-mode: vertical-lr; font-size: 0.8rem; opacity: 0.7; margin-top: 10px; text-orientation: upright; }
 
         /* Right Content */
         .loc-content {
@@ -79,100 +103,113 @@
 
         .update-tag { 
             position: absolute; top: 10px; right: 10px; 
-            font-size: 0.75rem; color: #888; 
-            background: rgba(255,255,255,0.8); 
-            padding: 2px 6px; border-radius: 4px; 
+            font-size: 0.75rem; color: #ccc; 
+            background: rgba(255,255,255,0.1); 
+            padding: 2px 8px; border-radius: 4px; 
         }
 
         /* Info Top */
-        .info-top { display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 15px; gap: 15px; }
+        .info-top { display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 20px; gap: 15px; }
         
         .weather-big { display: flex; flex-direction: column; justify-content: center; min-width: 120px;}
-        .weather-temp { font-size: 3.5rem; font-weight: 800; line-height: 1; color: #2c3e50; }
-        .weather-desc { font-size: 1.1rem; font-weight: bold; color: #666; margin-top: 5px; }
+        .weather-temp { font-size: 3.8rem; font-weight: 800; line-height: 1; color: #fff; letter-spacing: -1px; }
+        .weather-desc { font-size: 1.2rem; font-weight: bold; color: var(--text-sub); margin-top: 5px; }
+        .pop-label { font-size: 0.9rem; color: var(--text-muted); font-weight: normal; }
+        .pop-val { color: #81d4fa; font-weight: bold; } /* Cyan for pop */
 
-        /* Rec Box */
+        /* Rec Box (Darker) */
         .rec-box {
-            background: #f0f4f8; padding: 12px; border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2); 
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 12px; border-radius: 12px;
             display: flex; justify-content: space-between; align-items: stretch;
             flex: 1; gap: 5px;
         }
         .rec-item { 
             display: flex; flex-direction: column; align-items: center; 
             justify-content: center; text-align: center;
-            flex: 1; border-right: 1px solid #ddd;
+            flex: 1; border-right: 1px solid rgba(255,255,255,0.1);
         }
         .rec-item:last-child { border-right: none; }
         
-        .rec-emoji { font-size: 1.8rem; line-height: 1.2; margin-bottom: 2px; }
-        .rec-text { font-size: 0.85rem; font-weight: bold; color: #444; line-height: 1.2;}
+        .rec-emoji { font-size: 2rem; line-height: 1.2; margin-bottom: 4px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
+        .rec-text { font-size: 0.9rem; font-weight: bold; color: #eee; line-height: 1.2;}
 
         /* --- Timeline --- */
-        .timeline-container { margin-bottom: 10px; }
-        .timeline-header { font-size: 0.85rem; color: #888; margin-bottom: 5px; display: flex; justify-content: space-between; padding: 0 2px; }
+        .timeline-container { margin-bottom: 15px; }
+        .timeline-header { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; display: flex; justify-content: space-between; padding: 0 2px; }
 
         .traffic-lights {
             display: flex; height: 150px; border-radius: 12px;
-            overflow-x: auto; overflow-y: hidden; background: #fff;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05); scroll-snap-type: x mandatory;
-            border: 1px solid #eee;
+            overflow-x: auto; overflow-y: hidden; 
+            background: rgba(0,0,0,0.3); /* Dark track */
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3); 
+            scroll-snap-type: x mandatory;
+            border: 1px solid rgba(255,255,255,0.1);
         }
+
+        .traffic-lights::-webkit-scrollbar { height: 4px; }
+        .traffic-lights::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .traffic-lights::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
 
         .light-block {
             flex: 0 0 22%; min-width: 85px;
             display: flex; flex-direction: column; justify-content: space-evenly;
             align-items: center; text-align: center;
-            border-right: 1px solid rgba(255,255,255,0.6);
+            border-right: 1px solid rgba(0,0,0,0.1); /* Subtle divider */
             padding: 8px 2px; scroll-snap-align: start; position: relative;
         }
         .light-block:last-child { border-right: none; }
 
-        .time-label { font-size: 0.8rem; font-weight: bold; color: #444; white-space: nowrap;}
-        .status-emoji { font-size: 2rem; line-height: 1; }
-        .status-text { font-size: 0.9rem; font-weight: 900; color: #222; }
-        .temp-sub { font-size: 0.95rem; font-weight: bold; color: #555; }
-        .rain-sub { font-size: 0.8rem; color: #666; font-weight: normal; }
+        /* Inside light block: Keep text dark because backgrounds are pastel */
+        .time-label { font-size: 0.8rem; font-weight: 800; color: #333; white-space: nowrap; opacity: 0.7;}
+        .status-emoji { font-size: 2.2rem; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
+        .status-text { font-size: 1rem; font-weight: 900; color: #111; }
+        .temp-sub { font-size: 1rem; font-weight: bold; color: #333; }
+        .rain-sub { font-size: 0.8rem; color: #444; font-weight: bold; }
+        .rain-mm { font-size: 0.7rem; color: #555; }
 
         /* --- More Info Bar --- */
         .more-info-bar {
-            background: #f1f3f5; border-top: 1px solid #eee;
-            color: #888; font-size: 0.8rem; text-align: center;
-            padding: 6px; cursor: pointer; transition: background 0.2s;
+            background: rgba(0,0,0,0.2);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            color: #aaa; font-size: 0.8rem; text-align: center;
+            padding: 10px; cursor: pointer; transition: all 0.2s;
             display: flex; justify-content: center; align-items: center; gap: 6px;
         }
-        .more-info-bar:hover { background: #e9ecef; color: #555; }
+        .more-info-bar:hover { background: rgba(255,255,255,0.1); color: #fff; }
         .more-info-bar span { font-size: 0.7rem; transition: transform 0.3s; }
         .more-info-bar.active span { transform: rotate(180deg); }
-        .more-info-bar.active { background: #e3e6ea; border-bottom: 1px solid #ddd; }
+        .more-info-bar.active { background: rgba(0,0,0,0.4); }
 
         .forecast-table {
             width: 100%; border-collapse: collapse; font-size: 0.9rem; 
-            display: none; background: white;
+            display: none; background: transparent; color: #ddd;
         }
         .forecast-table.show { display: table; }
-        .forecast-table th { background: #fafafa; padding: 8px; font-size: 0.8rem; color: #666; border-bottom: 1px solid #eee;}
-        .forecast-table td { padding: 10px; text-align: center; border-bottom: 1px solid #f0f0f0; }
+        .forecast-table th { background: rgba(0,0,0,0.3); padding: 10px; font-size: 0.8rem; color: #aaa; border-bottom: 1px solid rgba(255,255,255,0.1);}
+        .forecast-table td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
         @media (max-width: 600px) {
             .location-row { flex-direction: column; min-height: auto; }
             .loc-header {
-                width: 100%; flex-direction: row; padding: 8px; justify-content: flex-start; gap: 10px;
-                background: linear-gradient(90deg, #2c3e50, #4ca1af);
+                width: 100%; flex-direction: row; padding: 10px; justify-content: flex-start; gap: 10px;
+                background: linear-gradient(90deg, #141e30, #243b55);
+                border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1);
             }
             .loc-title, .loc-sub { writing-mode: horizontal-tb; font-size: 1.1rem; margin: 0; letter-spacing: 1px; }
             .loc-sub::before { content: "("; } .loc-sub::after { content: ")"; }
             
-            .info-top { flex-direction: column; gap: 10px; }
-            .weather-big { flex-direction: row; align-items: baseline; gap: 10px; justify-content: flex-start; width: 100%; }
-            .weather-temp { font-size: 3.5rem; }
+            .info-top { flex-direction: column; gap: 15px; }
+            .weather-big { flex-direction: row; align-items: baseline; gap: 12px; justify-content: flex-start; width: 100%; }
             .rec-box { width: 100%; box-sizing: border-box; }
             .light-block { flex: 0 0 26%; min-width: 85px; }
         }
 
         .loading { color: white; text-align: center; padding: 40px; font-size: 1.2rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .error-msg { background: white; color: #d32f2f; padding: 15px; border-radius: 8px; margin: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); white-space: pre-line; word-break: break-all;}
-        footer { margin-top: 30px; color: rgba(255,255,255,0.7); text-align: center; padding: 20px; font-size: 0.8rem; }
-        .debug-box { background: #222; color: #0f0; padding: 10px; margin: 10px; font-family: monospace; font-size: 0.7rem; border-radius: 5px; max-height: 200px; overflow: auto; display: none; text-align: left; }
+        .error-msg { background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.3); color: #ff8a80; padding: 15px; border-radius: 8px; margin: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); white-space: pre-line; word-break: break-all;}
+        footer { margin-top: 30px; color: rgba(255,255,255,0.5); text-align: center; padding: 20px; font-size: 0.8rem; }
+        .debug-box { background: #111; color: #0f0; padding: 10px; margin: 10px; font-family: monospace; font-size: 0.7rem; border-radius: 5px; max-height: 200px; overflow: auto; display: none; text-align: left; }
     </style>
 </head>
 <body>
@@ -187,7 +224,7 @@
 <div class="container">
     <div id="loading" class="loading">
         正在分析天氣數據...<br>
-        <small>連線至 CWA API (逾時: 10秒)</small>
+        <small style="opacity:0.7">CWA F-D0047-061/069</small>
     </div>
     <div id="error-display" class="error-msg" style="display:none;"></div>
     <div id="debug-info" class="debug-box"></div>
@@ -207,7 +244,7 @@
                         <div class="weather-temp" id="curr-temp-xinyi">--°</div>
                         <div class="weather-desc">
                             <span id="curr-desc-xinyi">--</span>
-                            <div style="font-size:0.9rem; color:#666; font-weight:normal;">降雨機率 <span id="curr-pop-xinyi">--</span>%</div>
+                            <div class="pop-label">降雨機率 <span class="pop-val" id="curr-pop-xinyi">--</span>%</div>
                         </div>
                     </div>
                     
@@ -263,7 +300,7 @@
                         <div class="weather-temp" id="curr-temp-xindian">--°</div>
                         <div class="weather-desc">
                             <span id="curr-desc-xindian">--</span>
-                            <div style="font-size:0.9rem; color:#666; font-weight:normal;">降雨機率 <span id="curr-pop-xindian">--</span>%</div>
+                            <div class="pop-label">降雨機率 <span class="pop-val" id="curr-pop-xindian">--</span>%</div>
                         </div>
                     </div>
                     
@@ -306,11 +343,12 @@
 
 <footer>
     <div>Data Source: CWA Open Data</div>
-    <div class="build-info">Build# 2025120515 (TimeoutFix)</div>
-    <div class="release-notes" style="margin-top:10px; font-size:0.75rem; color:#aaa;">
-        <strong>Release Notes v1.0.30:</strong>
-        <br>- 修正卡住問題：新增 10 秒 API 請求逾時 (Timeout) 設定。
-        <br>- 強制刷新：API 請求加入時間戳記，避免讀取到舊的快取資料。
+    <div class="build-info">Build# 2025120516 (DarkTheme)</div>
+    <div class="release-notes" style="margin-top:10px; font-size:0.75rem; opacity:0.6;">
+        <strong>Release Notes v1.0.31:</strong>
+        <br>- Theme: 深色運動風 (Dark Sporty)。卡片改為深藍灰半透明，文字反白。
+        <br>- UI: 燈號維持粉彩底色搭配深色文字，以達成高對比「霓虹」效果。
+        <br>- Fix: 修正降雨機率文字被切斷的問題 (版面加高)。
     </div>
 </footer>
 
@@ -329,13 +367,7 @@
     async function initWeather() {
         try {
             document.getElementById("error-display").style.display = "none";
-            
-            // 使用 Promise.allSettled 確保一個失敗不會卡死全部 (雖然這裡用 all 也可以，但有 timeout 保護)
-            await Promise.all([ 
-                fetchAndRender(CONFIG.loc1), 
-                fetchAndRender(CONFIG.loc2) 
-            ]);
-            
+            await Promise.all([ fetchAndRender(CONFIG.loc1), fetchAndRender(CONFIG.loc2) ]);
             document.getElementById("loading").style.display = "none";
             document.getElementById("card-xinyi").style.display = "flex";
             document.getElementById("card-xindian").style.display = "flex";
@@ -344,57 +376,42 @@
             document.getElementById("loading").style.display = "none";
             const err = document.getElementById("error-display");
             err.style.display = "block";
-            err.innerText = "資料讀取失敗，請檢查網路連線或稍後再試。\n" + error.message;
-        }
-    }
-
-    // 封裝 Fetch，加入 Timeout 功能
-    async function fetchWithTimeout(resource, options = {}) {
-        const { timeout = 10000 } = options; // 10秒預設
-        
-        const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), timeout);
-        
-        try {
-            const response = await fetch(resource, {
-                ...options,
-                signal: controller.signal  
-            });
-            clearTimeout(id);
-            return response;
-        } catch (error) {
-            clearTimeout(id);
-            throw error;
+            err.innerText = "Error: " + error.message;
         }
     }
 
     async function fetchAndRender(loc) {
-        // 加入時間戳記避免快取
-        const timestamp = new Date().getTime();
-        const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/${loc.dataId}?Authorization=${API_KEY}&locationName=${encodeURIComponent(loc.district)}&_t=${timestamp}`;
+        // Add timestamp to prevent cache
+        const ts = new Date().getTime();
+        const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/${loc.dataId}?Authorization=${API_KEY}&locationName=${encodeURIComponent(loc.district)}&_t=${ts}`;
         
-        const res = await fetchWithTimeout(url, { timeout: 10000 }); // 設定 10 秒逾時
+        // Add Timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
         
-        if (!res.ok) {
-            throw new Error(`API Error ${res.status}: ${res.statusText}`);
+        try {
+            const res = await fetch(url, { signal: controller.signal });
+            clearTimeout(timeoutId);
+            const data = await res.json();
+            
+            if (data.success === "false") throw new Error(data.message.text);
+            
+            const records = data.records || data.Records;
+            if (!records) throw new Error("API Records missing");
+            
+            const locWrap = records.locations || records.Locations;
+            if (!locWrap || locWrap.length === 0) throw new Error("API Locations missing");
+            
+            const locList = locWrap[0].location || locWrap[0].Location;
+            if (!locList || locList.length === 0) throw new Error(`找不到地區資料: ${loc.district}`);
+            
+            const elements = locList[0].weatherElement || locList[0].WeatherElement;
+            const processed = processData(elements, loc.uiId);
+            renderUI(loc.uiId, processed);
+        } catch (e) {
+            clearTimeout(timeoutId);
+            throw e;
         }
-
-        const data = await res.json();
-        
-        if (data.success === "false") throw new Error(data.message.text);
-        
-        const records = data.records || data.Records;
-        if (!records) throw new Error("API Records missing");
-        
-        const locWrap = records.locations || records.Locations;
-        if (!locWrap || locWrap.length === 0) throw new Error("API Locations missing");
-        
-        const locList = locWrap[0].location || locWrap[0].Location;
-        if (!locList || locList.length === 0) throw new Error(`找不到地區資料: ${loc.district}`);
-        
-        const elements = locList[0].weatherElement || locList[0].WeatherElement;
-        const processed = processData(elements, loc.uiId);
-        renderUI(loc.uiId, processed);
     }
 
     function getValue(obj) {
@@ -467,7 +484,6 @@
                 const pS = p.startTime || p.StartTime || p.dataTime || p.DataTime;
                 return new Date(pS).getTime() === start.getTime();
             });
-            
             if (!popItem) {
                 popItem = PoP_list.find(p => {
                     const ps = new Date(p.startTime || p.StartTime);
@@ -615,7 +631,6 @@
         else if (t > 28) cl = { i: "🎽", t: "短袖透氣" };
         else if (t > 32) cl = { i: "🧢", t: "注意防曬" };
 
-        // 統一邏輯：降雨機率 >= 40% 建議室內
         if (p >= 40) sp = { i: "🏠", t: "室內運動" }; 
         else if (p >= 20) sp = { i: "🦶", t: "小心濕滑" };
         else if (t > 33) sp = { i: "💧", t: "注意補水" };
