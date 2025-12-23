@@ -9,15 +9,15 @@
             /* Background: Deep Sporty Blue */
             --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
             
-            /* Card: Dark Glassmorphism */
+            /* Card: Dark Glassmorphism (Neutral Dark) */
             --card-bg: rgba(30, 41, 59, 0.95); 
             
-            /* Text Colors (Light Mode for Dark Background) */
+            /* Text Colors */
             --text-main: #ffffff;
             --text-sub: #cbd5e1;
             --text-muted: #94a3b8;
 
-            /* Status Colors (Keep Pastels for High Contrast against Dark) */
+            /* Status Colors */
             --level-rest: #ef9a9a;       /* Sleep */
             --level-bad: #ffcc80;        /* Light Rain */
             --level-ok: #fff59d;         /* Nice */
@@ -67,13 +67,13 @@
 
         .container {
             max-width: 900px; margin: 20px auto; padding: 0 10px;
-            display: flex; flex-direction: column; gap: 15px; 
+            display: flex; flex-direction: column; gap: 20px; 
         }
 
-        /* --- Card Design (Dark Theme) --- */
+        /* --- Card Design --- */
         .location-row {
             display: flex; 
-            background: var(--card-bg); 
+            background: var(--card-bg); /* Dark neutral background */
             border-radius: 16px;
             overflow: hidden; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
@@ -81,16 +81,26 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Left Header */
+        /* Left Header (Side Label) - Specific Colors applied here */
         .loc-header {
-            background: rgba(0, 0, 0, 0.4); /* Darker sidebar */
             color: #fff; width: 50px;
             display: flex; flex-direction: column; justify-content: center;
             align-items: center; text-align: center; padding: 10px 5px; flex-shrink: 0;
-            border-right: 1px solid rgba(255,255,255,0.1);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
-        .loc-title { writing-mode: vertical-lr; font-size: 1.2rem; font-weight: bold; letter-spacing: 3px; text-orientation: upright; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-        .loc-sub { writing-mode: vertical-lr; font-size: 0.8rem; opacity: 0.7; margin-top: 10px; text-orientation: upright; }
+        
+        /* New Taipei (Xindian) -> Green */
+        #card-xindian .loc-header {
+            background: linear-gradient(180deg, #6BBF59 0%, #4c9e3d 100%);
+        }
+
+        /* Xinyi -> Blue */
+        #card-xinyi .loc-header {
+            background: linear-gradient(180deg, #0073CF 0%, #0056a3 100%);
+        }
+
+        .loc-title { writing-mode: vertical-lr; font-size: 1.2rem; font-weight: bold; letter-spacing: 3px; text-orientation: upright; }
+        .loc-sub { writing-mode: vertical-lr; font-size: 0.8rem; opacity: 0.9; margin-top: 10px; text-orientation: upright; font-weight: 500;}
 
         /* Right Content */
         .loc-content {
@@ -103,7 +113,7 @@
 
         .update-tag { 
             position: absolute; top: 10px; right: 10px; 
-            font-size: 0.75rem; color: #ccc; 
+            font-size: 0.75rem; color: #aaa; 
             background: rgba(255,255,255,0.1); 
             padding: 2px 8px; border-radius: 4px; 
         }
@@ -115,9 +125,9 @@
         .weather-temp { font-size: 3.8rem; font-weight: 800; line-height: 1; color: #fff; letter-spacing: -1px; }
         .weather-desc { font-size: 1.2rem; font-weight: bold; color: var(--text-sub); margin-top: 5px; }
         .pop-label { font-size: 0.9rem; color: var(--text-muted); font-weight: normal; }
-        .pop-val { color: #81d4fa; font-weight: bold; } /* Cyan for pop */
+        .pop-val { color: #81d4fa; font-weight: bold; } 
 
-        /* Rec Box (Darker) */
+        /* Rec Box (Dark) */
         .rec-box {
             background: rgba(0, 0, 0, 0.2); 
             border: 1px solid rgba(255,255,255,0.05);
@@ -156,12 +166,11 @@
             flex: 0 0 22%; min-width: 85px;
             display: flex; flex-direction: column; justify-content: space-evenly;
             align-items: center; text-align: center;
-            border-right: 1px solid rgba(0,0,0,0.1); /* Subtle divider */
+            border-right: 1px solid rgba(0,0,0,0.1);
             padding: 8px 2px; scroll-snap-align: start; position: relative;
         }
         .light-block:last-child { border-right: none; }
 
-        /* Inside light block: Keep text dark because backgrounds are pastel */
         .time-label { font-size: 0.8rem; font-weight: 800; color: #333; white-space: nowrap; opacity: 0.7;}
         .status-emoji { font-size: 2.2rem; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
         .status-text { font-size: 1rem; font-weight: 900; color: #111; }
@@ -194,9 +203,15 @@
             .location-row { flex-direction: column; min-height: auto; }
             .loc-header {
                 width: 100%; flex-direction: row; padding: 10px; justify-content: flex-start; gap: 10px;
-                background: linear-gradient(90deg, #141e30, #243b55);
-                border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+                /* Mobile: Gradient applied to top bar as well */
             }
+            #card-xindian .loc-header {
+                background: linear-gradient(90deg, #6BBF59 0%, #4c9e3d 100%);
+            }
+            #card-xinyi .loc-header {
+                background: linear-gradient(90deg, #0073CF 0%, #0056a3 100%);
+            }
+            
             .loc-title, .loc-sub { writing-mode: horizontal-tb; font-size: 1.1rem; margin: 0; letter-spacing: 1px; }
             .loc-sub::before { content: "("; } .loc-sub::after { content: ")"; }
             
@@ -229,7 +244,61 @@
     <div id="error-display" class="error-msg" style="display:none;"></div>
     <div id="debug-info" class="debug-box"></div>
 
-    <!-- Row 1: 信義區 -->
+    <!-- Row 1: 新店區 (Top - Green Header) -->
+    <div id="card-xindian" class="location-row" style="display:none;">
+        <div class="loc-header">
+            <div class="loc-title">新店區</div>
+            <div class="loc-sub">央北/十四張</div>
+        </div>
+        <div class="loc-content">
+            <div class="loc-main-data">
+                <div class="update-tag" id="update-time-xindian">--:--</div>
+                
+                <div class="info-top">
+                    <div class="weather-big">
+                        <div class="weather-temp" id="curr-temp-xindian">--°</div>
+                        <div class="weather-desc">
+                            <span id="curr-desc-xindian">--</span>
+                            <div class="pop-label">降雨機率 <span class="pop-val" id="curr-pop-xindian">--</span>%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="rec-box">
+                        <div class="rec-item">
+                            <span class="rec-emoji" id="icon-u-xindian">--</span>
+                            <span class="rec-text" id="text-u-xindian">--</span>
+                        </div>
+                        <div class="rec-item">
+                            <span class="rec-emoji" id="icon-c-xindian">--</span>
+                            <span class="rec-text" id="text-c-xindian">--</span>
+                        </div>
+                        <div class="rec-item">
+                            <span class="rec-emoji" id="icon-s-xindian">--</span>
+                            <span class="rec-text" id="text-s-xindian">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-container">
+                    <div class="timeline-header">
+                        <span>未來 24 小時趨勢</span>
+                        <span style="opacity:0.6;">← 滑動 →</span>
+                    </div>
+                    <div class="traffic-lights" id="lights-xindian"></div>
+                </div>
+            </div>
+
+            <div class="more-info-bar" onclick="toggleDetails('table-xindian', this)">
+                詳細數據 <span>▼</span>
+            </div>
+            <table id="table-xindian" class="forecast-table">
+                <thead><tr><th>時間</th><th>溫度</th><th>天氣</th><th>降雨</th></tr></thead>
+                <tbody id="tbody-xindian"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Row 2: 信義區 (Bottom - Blue Header) -->
     <div id="card-xinyi" class="location-row" style="display:none;">
         <div class="loc-header">
             <div class="loc-title">信義區</div>
@@ -285,77 +354,22 @@
         </div>
     </div>
 
-    <!-- Row 2: 新店區 -->
-    <div id="card-xindian" class="location-row" style="display:none;">
-        <div class="loc-header">
-            <div class="loc-title">新店區</div>
-            <div class="loc-sub">央北/十四張</div>
-        </div>
-        <div class="loc-content">
-            <div class="loc-main-data">
-                <div class="update-tag" id="update-time-xindian">--:--</div>
-                
-                <div class="info-top">
-                    <div class="weather-big">
-                        <div class="weather-temp" id="curr-temp-xindian">--°</div>
-                        <div class="weather-desc">
-                            <span id="curr-desc-xindian">--</span>
-                            <div class="pop-label">降雨機率 <span class="pop-val" id="curr-pop-xindian">--</span>%</div>
-                        </div>
-                    </div>
-                    
-                    <div class="rec-box">
-                        <div class="rec-item">
-                            <span class="rec-emoji" id="icon-u-xindian">--</span>
-                            <span class="rec-text" id="text-u-xindian">--</span>
-                        </div>
-                        <div class="rec-item">
-                            <span class="rec-emoji" id="icon-c-xindian">--</span>
-                            <span class="rec-text" id="text-c-xindian">--</span>
-                        </div>
-                        <div class="rec-item">
-                            <span class="rec-emoji" id="icon-s-xindian">--</span>
-                            <span class="rec-text" id="text-s-xindian">--</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="timeline-container">
-                    <div class="timeline-header">
-                        <span>未來 24 小時趨勢</span>
-                        <span style="opacity:0.6;">← 滑動 →</span>
-                    </div>
-                    <div class="traffic-lights" id="lights-xindian"></div>
-                </div>
-            </div>
-
-            <div class="more-info-bar" onclick="toggleDetails('table-xindian', this)">
-                詳細數據 <span>▼</span>
-            </div>
-            <table id="table-xindian" class="forecast-table">
-                <thead><tr><th>時間</th><th>溫度</th><th>天氣</th><th>降雨</th></tr></thead>
-                <tbody id="tbody-xindian"></tbody>
-            </table>
-        </div>
-    </div>
-
 </div>
 
 <footer>
     <div>Data Source: CWA Open Data</div>
-    <div class="build-info">Build# 2025120516 (DarkTheme)</div>
+    <div class="build-info">Build# 2025120519 (SideColors)</div>
     <div class="release-notes" style="margin-top:10px; font-size:0.75rem; opacity:0.6;">
-        <strong>Release Notes v1.0.31:</strong>
-        <br>- Theme: 深色運動風 (Dark Sporty)。卡片改為深藍灰半透明，文字反白。
-        <br>- UI: 燈號維持粉彩底色搭配深色文字，以達成高對比「霓虹」效果。
-        <br>- Fix: 修正降雨機率文字被切斷的問題 (版面加高)。
+        <strong>Release Notes v1.0.34:</strong>
+        <br>- Colors: 顏色識別僅套用於左側區域 (新店=綠 / 信義=藍)。
+        <br>- Layout: 卡片內容恢復深色背景，提升閱讀舒適度。
     </div>
 </footer>
 
 <script>
     const CONFIG = {
-        loc1: { dataId: "F-D0047-061", district: "信義區", uiId: "xinyi" },
-        loc2: { dataId: "F-D0047-069", district: "新店區", uiId: "xindian" }
+        loc1: { dataId: "F-D0047-069", district: "新店區", uiId: "xindian" },
+        loc2: { dataId: "F-D0047-061", district: "信義區", uiId: "xinyi" }
     };
     const ENC_KEY = "Q1dBLTcwNENBMjRGLTM5OEMtNEYzRi1BRDU3LUI2OUYzMkY5NkU0Mg==";
     const API_KEY = atob(ENC_KEY);
@@ -381,11 +395,9 @@
     }
 
     async function fetchAndRender(loc) {
-        // Add timestamp to prevent cache
         const ts = new Date().getTime();
         const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/${loc.dataId}?Authorization=${API_KEY}&locationName=${encodeURIComponent(loc.district)}&_t=${ts}`;
         
-        // Add Timeout
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
         
@@ -484,6 +496,7 @@
                 const pS = p.startTime || p.StartTime || p.dataTime || p.DataTime;
                 return new Date(pS).getTime() === start.getTime();
             });
+            
             if (!popItem) {
                 popItem = PoP_list.find(p => {
                     const ps = new Date(p.startTime || p.StartTime);
@@ -491,6 +504,7 @@
                     return (start < pe && end > ps);
                 });
             }
+
             if(popItem) {
                 const pVals = getProp(popItem, "elementValue");
                 if(pVals && pVals.length > 0) popVal = getValue(pVals[0]);
