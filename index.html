@@ -9,7 +9,7 @@
             /* Background: Deep Sporty Blue */
             --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
             
-            /* Card: Dark Glassmorphism (Neutral Dark) */
+            /* Card: Dark Glassmorphism */
             --card-bg: rgba(30, 41, 59, 0.95); 
             
             /* Text Colors */
@@ -73,7 +73,7 @@
         /* --- Card Design --- */
         .location-row {
             display: flex; 
-            background: var(--card-bg); /* Dark neutral background */
+            background: var(--card-bg); 
             border-radius: 16px;
             overflow: hidden; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
@@ -81,23 +81,17 @@
             border: 1px solid rgba(255,255,255,0.1);
         }
 
-        /* Left Header (Side Label) - Specific Colors applied here */
+        /* Left Header (Side Label) */
         .loc-header {
             color: #fff; width: 50px;
             display: flex; flex-direction: column; justify-content: center;
             align-items: center; text-align: center; padding: 10px 5px; flex-shrink: 0;
+            border-right: 1px solid rgba(255,255,255,0.1);
             text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
         
-        /* New Taipei (Xindian) -> Green */
-        #card-xindian .loc-header {
-            background: linear-gradient(180deg, #6BBF59 0%, #4c9e3d 100%);
-        }
-
-        /* Xinyi -> Blue */
-        #card-xinyi .loc-header {
-            background: linear-gradient(180deg, #0073CF 0%, #0056a3 100%);
-        }
+        #card-xindian .loc-header { background: linear-gradient(180deg, #6BBF59 0%, #4c9e3d 100%); }
+        #card-xinyi .loc-header { background: linear-gradient(180deg, #0073CF 0%, #0056a3 100%); }
 
         .loc-title { writing-mode: vertical-lr; font-size: 1.2rem; font-weight: bold; letter-spacing: 3px; text-orientation: upright; }
         .loc-sub { writing-mode: vertical-lr; font-size: 0.8rem; opacity: 0.9; margin-top: 10px; text-orientation: upright; font-weight: 500;}
@@ -122,12 +116,13 @@
         .info-top { display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 20px; gap: 15px; }
         
         .weather-big { display: flex; flex-direction: column; justify-content: center; min-width: 120px;}
-        .weather-temp { font-size: 3.8rem; font-weight: 800; line-height: 1; color: #fff; letter-spacing: -1px; }
-        .weather-desc { font-size: 1.2rem; font-weight: bold; color: var(--text-sub); margin-top: 5px; }
-        .pop-label { font-size: 0.9rem; color: var(--text-muted); font-weight: normal; }
-        .pop-val { color: #81d4fa; font-weight: bold; } 
+        .weather-temp { font-size: 3.8rem; font-weight: 800; line-height: 1; color: #fff; letter-spacing: -1px; text-shadow: 0 4px 8px rgba(0,0,0,0.15);}
+        .temp-label-small { font-size: 1rem; font-weight: normal; opacity: 0.7; vertical-align: middle; margin-left: 5px; }
+        .weather-desc { font-size: 1.2rem; font-weight: bold; color: var(--text-main); margin-top: 5px; opacity: 0.95;}
+        .pop-label { font-size: 0.9rem; color: var(--text-sub); font-weight: 500; }
+        .pop-val { color: #81d4fa; font-weight: 800; } 
 
-        /* Rec Box (Dark) */
+        /* Rec Box */
         .rec-box {
             background: rgba(0, 0, 0, 0.2); 
             border: 1px solid rgba(255,255,255,0.05);
@@ -142,8 +137,8 @@
         }
         .rec-item:last-child { border-right: none; }
         
-        .rec-emoji { font-size: 2rem; line-height: 1.2; margin-bottom: 4px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
-        .rec-text { font-size: 0.9rem; font-weight: bold; color: #eee; line-height: 1.2;}
+        .rec-emoji { font-size: 2rem; line-height: 1.2; margin-bottom: 4px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+        .rec-text { font-size: 0.9rem; font-weight: bold; color: #fff; line-height: 1.2; text-shadow: 0 1px 2px rgba(0,0,0,0.2);}
 
         /* --- Timeline --- */
         .timeline-container { margin-bottom: 15px; }
@@ -152,31 +147,31 @@
         .traffic-lights {
             display: flex; height: 150px; border-radius: 12px;
             overflow-x: auto; overflow-y: hidden; 
-            background: rgba(0,0,0,0.3); /* Dark track */
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.3); 
+            background: rgba(255,255,255,0.9); 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
             scroll-snap-type: x mandatory;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: none;
         }
 
         .traffic-lights::-webkit-scrollbar { height: 4px; }
-        .traffic-lights::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-        .traffic-lights::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+        .traffic-lights::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        .traffic-lights::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 2px; }
 
         .light-block {
             flex: 0 0 22%; min-width: 85px;
             display: flex; flex-direction: column; justify-content: space-evenly;
             align-items: center; text-align: center;
-            border-right: 1px solid rgba(0,0,0,0.1);
+            border-right: 1px solid rgba(0,0,0,0.05);
             padding: 8px 2px; scroll-snap-align: start; position: relative;
         }
         .light-block:last-child { border-right: none; }
 
-        .time-label { font-size: 0.8rem; font-weight: 800; color: #333; white-space: nowrap; opacity: 0.7;}
-        .status-emoji { font-size: 2.2rem; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2)); }
-        .status-text { font-size: 1rem; font-weight: 900; color: #111; }
+        .time-label { font-size: 0.8rem; font-weight: 800; color: #444; white-space: nowrap; opacity: 0.8;}
+        .status-emoji { font-size: 2.2rem; line-height: 1; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1)); }
+        .status-text { font-size: 1rem; font-weight: 900; color: #222; }
         .temp-sub { font-size: 1rem; font-weight: bold; color: #333; }
-        .rain-sub { font-size: 0.8rem; color: #444; font-weight: bold; }
-        .rain-mm { font-size: 0.7rem; color: #555; }
+        .rain-sub { font-size: 0.8rem; color: #555; font-weight: bold; }
+        .rain-mm { font-size: 0.7rem; color: #666; }
 
         /* --- More Info Bar --- */
         .more-info-bar {
@@ -196,21 +191,17 @@
             display: none; background: transparent; color: #ddd;
         }
         .forecast-table.show { display: table; }
-        .forecast-table th { background: rgba(0,0,0,0.3); padding: 10px; font-size: 0.8rem; color: #aaa; border-bottom: 1px solid rgba(255,255,255,0.1);}
+        .forecast-table th { background: rgba(0,0,0,0.3); padding: 10px; font-size: 0.8rem; color: #ccc; border-bottom: 1px solid rgba(255,255,255,0.1);}
         .forecast-table td { padding: 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
         @media (max-width: 600px) {
             .location-row { flex-direction: column; min-height: auto; }
             .loc-header {
                 width: 100%; flex-direction: row; padding: 10px; justify-content: flex-start; gap: 10px;
-                /* Mobile: Gradient applied to top bar as well */
+                border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1);
             }
-            #card-xindian .loc-header {
-                background: linear-gradient(90deg, #6BBF59 0%, #4c9e3d 100%);
-            }
-            #card-xinyi .loc-header {
-                background: linear-gradient(90deg, #0073CF 0%, #0056a3 100%);
-            }
+            #card-xindian .loc-header { background: linear-gradient(90deg, #6BBF59 0%, #4c9e3d 100%); }
+            #card-xinyi .loc-header { background: linear-gradient(90deg, #0073CF 0%, #0056a3 100%); }
             
             .loc-title, .loc-sub { writing-mode: horizontal-tb; font-size: 1.1rem; margin: 0; letter-spacing: 1px; }
             .loc-sub::before { content: "("; } .loc-sub::after { content: ")"; }
@@ -292,7 +283,7 @@
                 詳細數據 <span>▼</span>
             </div>
             <table id="table-xindian" class="forecast-table">
-                <thead><tr><th>時間</th><th>溫度</th><th>天氣</th><th>降雨</th></tr></thead>
+                <thead><tr><th>時間</th><th>體感</th><th>天氣</th><th>降雨</th></tr></thead>
                 <tbody id="tbody-xindian"></tbody>
             </table>
         </div>
@@ -348,7 +339,7 @@
                 詳細數據 <span>▼</span>
             </div>
             <table id="table-xinyi" class="forecast-table">
-                <thead><tr><th>時間</th><th>溫度</th><th>天氣</th><th>降雨</th></tr></thead>
+                <thead><tr><th>時間</th><th>體感</th><th>天氣</th><th>降雨</th></tr></thead>
                 <tbody id="tbody-xinyi"></tbody>
             </table>
         </div>
@@ -358,11 +349,11 @@
 
 <footer>
     <div>Data Source: CWA Open Data</div>
-    <div class="build-info">Build# 2025120519 (SideColors)</div>
+    <div class="build-info">Build# 2025120520 (ApparentTemp)</div>
     <div class="release-notes" style="margin-top:10px; font-size:0.75rem; opacity:0.6;">
-        <strong>Release Notes v1.0.34:</strong>
-        <br>- Colors: 顏色識別僅套用於左側區域 (新店=綠 / 信義=藍)。
-        <br>- Layout: 卡片內容恢復深色背景，提升閱讀舒適度。
+        <strong>Release Notes v1.0.35:</strong>
+        <br>- Feature: 顯示溫度全面改為「體感溫度 (AT)」，更符合運動參考需求。
+        <br>- UI: 標題欄顏色區分：新店(綠) / 信義(藍)。
     </div>
 </footer>
 
@@ -399,7 +390,7 @@
         const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/${loc.dataId}?Authorization=${API_KEY}&locationName=${encodeURIComponent(loc.district)}&_t=${ts}`;
         
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+        const timeoutId = setTimeout(() => controller.abort(), 10000); 
         
         try {
             const res = await fetch(url, { signal: controller.signal });
@@ -454,7 +445,8 @@
     }
 
     function processData(elements, uiId) {
-        const rawT = getEl(elements, ["T", "溫度"]);
+        // Change priority: AT (Apparent Temp) > T (Temp)
+        const rawT = getEl(elements, ["AT", "體感溫度"]) || getEl(elements, ["T", "溫度"]);
         if(!rawT) return [];
 
         const T_list = getProp(rawT, "time");
@@ -551,7 +543,7 @@
         const displayTemp = isNaN(cur.temp) ? "--" : cur.temp;
         const displayPop = (cur.pop === null || cur.pop === " " || isNaN(parseInt(cur.pop))) ? "0" : cur.pop;
 
-        document.getElementById(`curr-temp-${uiId}`).innerText = `${displayTemp}°`;
+        document.getElementById(`curr-temp-${uiId}`).innerHTML = `${displayTemp}°<span class="temp-label-small">體感</span>`;
         document.getElementById(`curr-desc-${uiId}`).innerText = cur.wx;
         document.getElementById(`curr-pop-${uiId}`).innerText = displayPop;
         
